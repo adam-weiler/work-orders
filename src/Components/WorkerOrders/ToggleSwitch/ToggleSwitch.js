@@ -9,13 +9,8 @@ class ToggleSwitch extends Component {
             
         }
     }
-    
-    componentDidMount() {
-        
-    }
 
     render() {
-        
         return (
             <p>Earliest first 
                 <label className="switch">
