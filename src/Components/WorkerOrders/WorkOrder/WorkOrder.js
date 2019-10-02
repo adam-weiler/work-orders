@@ -33,16 +33,16 @@ class WorkOrder extends Component {
         return (
             <article className='work-order'>
                 <h2>{workOrders.name}</h2>
-                <p class='text-left'>{workOrders.description}</p>
+                <p className='text-left'>{workOrders.description}</p>
                 <span className='profile-info'>
-                    <img src={worker.image} alt={worker.name} class='profile-image' />
+                    <img src={worker.image} alt={worker.name} className='profile-image' />
                     <span className='profile-text text-left'>
                         <p>{worker.name}</p>
                         <p>{worker.companyName}</p>
                         <p>{worker.email}</p>
                     </span>
                 </span>
-                <p class='text-right'>
+                <p className='text-right'>
                     <Moment unix>{workOrders.deadline}</Moment>
                 </p>
             </article>
