@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios'
+import axios from 'axios';  // Used for API requests.
 
 import WorkOrder from './WorkOrder/WorkOrder.js'
 
