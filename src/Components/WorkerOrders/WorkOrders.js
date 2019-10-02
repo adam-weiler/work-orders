@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios';  // Used for API requests.
 
+// Smaller components:
 import WorkOrder from './WorkOrder/WorkOrder.js'
 
 import './WorkOrders.css';
@@ -11,10 +12,10 @@ import './WorkOrders.css';
 class WorkOrders extends Component {
     constructor() {
         super();
-    this.state = {
-        queryResults: []
+        this.state = {
+            workOrders: []
+        }
     }
-}
 
 
     componentDidMount() {
@@ -25,19 +26,10 @@ class WorkOrders extends Component {
 
         axios.get('https://www.hatchways.io/api/assessment/work_orders')
         .then(function (response) {
-            console.log(response.data);
-            // JSONresults = response.data.orders; 
-            // console.log(JSONresults)
-
             self.setState({
-                queryResults: response.data.orders
-            })
-
-            // let jsonElements = JSONresults.map(
-            //     (elem, id) => <WorkOrder />
-            // )
-
-        })
+                workOrders: response.data.orders
+            });
+        });
     
         window.scrollTo(0, 0); //Brings user to top of page.
     }
@@ -45,18 +37,17 @@ class WorkOrders extends Component {
     render() {
         let jsonElements;
 
-        if (this.state.queryResults) {
+        if (this.state.workOrders) {
             console.log('Yes!')
-            console.log(this.state.queryResults)
-            jsonElements = this.state.queryResults.map(
-                (elem, id) => <WorkOrder key={elem.id} jsonData={elem} />
+            console.log(this.state.workOrders)
+            jsonElements = this.state.workOrders.map(
+                (elem, id) => <WorkOrder key={elem.id} workOrders={elem} />
             )
         }
         
 
         return (
-            <section>
-                All work orders:
+            <section className='work-orders'>
                 {jsonElements}
             </section>
         );

@@ -1,13 +1,8 @@
-.work-order {
-    border: 1px solid #000;
-    width: 40%;
-    float: left;
+.work-orders {
+    margin: 0 auto;
+    position: relative;
+    width: 1090px;
+    display: grid;
+    grid-template-columns: 500px 500px;
+    grid-gap: 90px;
 }
-
-.profile-image {
-    height: 100px;
-    width: 100px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-  }
