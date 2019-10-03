@@ -14,7 +14,9 @@ class App extends Component {
             searchFilter: '',
             datesInOrder: true,
             workOrders: [],
-            loaded: false
+            loaded: false,
+
+            // workerList: []
         }
     }
 
@@ -25,28 +27,43 @@ class App extends Component {
         .then(function (response) {
             console.log('First then;')
             self.setState({
-                workOrders: self.sortByDate(response.data.orders)
+                // workOrders: self.sortByDate(response.data.orders)
             })
             // console.log(self.state.workOrders)
-        })
-        .then(function (response) {
-            console.log('Second then;')
-                let temp = self.state.workOrders;
+            
+            console.log('Second then;', response)
+            // console.log(self.state.workOrders)
+                let temp = response.data.orders;
+                // console.log(temp)
+                // let temp;
+                let temp3 = []
 
-                temp = temp.map(order => {
-                    axios.get(`https://www.hatchways.io/api/assessment/workers/${order.workerId}`)
+                let temp2 = temp.map(eachOrder => {
+                    axios.get(`https://www.hatchways.io/api/assessment/workers/${eachOrder.workerId}`)
                     .then(function (response) {
-                        order['userData'] = response.data.worker
-                        order['companyName'] = response.data.worker.companyName;
-                        order['email'] = response.data.worker.email;
-                        order['image'] = response.data.worker.image;
-                        order['userName'] = response.data.worker.name; //This definitely works!
+                        // eachOrder['userData'] = response.data.worker
+                        eachOrder['companyName'] = response.data.worker.companyName;
+                        eachOrder['email'] = response.data.worker.email;
+                        eachOrder['image'] = response.data.worker.image;
+                        eachOrder['userName'] = response.data.worker.name; //This definitely works!
+
+
+                        temp3.push ({ 'companyName': response.data.worker.companyName,
+                                      'email': response.data.worker.email,
+                                      'id': response.data.worker.id,
+                                      'image': response.data.worker.image,
+                                      'workerName': response.data.worker.name })
+
                     })
-                    return order;
+                    return eachOrder;
                 })
 
+                // console.log('Our temp', temp2)
+                console.log('Our temp3', temp3)
+
                 self.setState({
-                    workOrders: temp,
+                    workOrders: self.sortByDate(response.data.orders),
+                    workerList: temp3,
                     loaded: true
                 })
                 // }, () => console.log(self.state))
@@ -78,6 +95,7 @@ class App extends Component {
     }
 
     handleToggle = () => {
+        console.log('Toggle')
         let newWorkOrders;
 
         if (this.state.datesInOrder) {
@@ -110,10 +128,11 @@ class App extends Component {
                 <h1>Work Orders:</h1>
                 {/* <WorkOrders workOrders={this.state.workOrders} workerList={this.state.workerList} updateWorkerList={this.updateWorkerList} onSearchChange={this.onSearchChange} handleToggle={this.handleToggle}/> */}
 
-                {/* {this.state.loaded ?  */}
-                <WorkOrders onSearchChange={this.onSearchChange} handleToggle={this.handleToggle} workOrders={filteredWorkOrders} />
-                  {/* : <div>Loading</div>} */}
-            
+                { !this.state.loaded ? 
+                    <div>Loading</div>
+                :
+                    <WorkOrders onSearchChange={this.onSearchChange} handleToggle={this.handleToggle} workOrders={filteredWorkOrders} workerList={this.state.workerList} />
+                }
             </div>
         );
     }
