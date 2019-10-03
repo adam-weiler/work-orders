@@ -29,12 +29,13 @@ class WorkOrder extends Component {
         Moment.globalFormat = 'D/MM/YYYY, h:MM:SS A';
 
         return (
-            this.state.workOrders.userName ? 
+            // this.state.workOrders.userName ? 
                 <article className='work-order'>
                     <h2>{workOrders.name}</h2>
                     <p className='text-left'>{workOrders.description}</p>
                     <span className='profile-info'>
                         {workOrders.userData }
+                        {/* {workOrders.userData.email } */}
                         {/* <img src={worker.image} alt={worker.name} className='profile-image' />
                         <span className='profile-text text-left'>
                             <p>{worker.name}</p>
@@ -46,7 +47,7 @@ class WorkOrder extends Component {
                         <Moment unix>{workOrders.deadline}</Moment>
                     </p>
                 </article>
-            : <div>Loading</div>
+            // : <div>Loading</div>
         );
     }
 }
