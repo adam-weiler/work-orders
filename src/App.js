@@ -25,18 +25,46 @@ class App extends Component {
         .then(function (response) {
             self.setState({
                 workOrders: self.sortByDate(response.data.orders)
-            }, () => {
-                self.state.workOrders.map(order => {
+            })
+            console.log(self.state.workOrders)
+            console.log('First then')
+        })
+        .then(function (response) {
+            // console.log('aa')
+
+                let temp = self.state.workOrders;
+
+                temp = temp.map(order => {
                     axios.get(`https://www.hatchways.io/api/assessment/workers/${order.workerId}`)
                     .then(function (response) {
-                        order.userData = [response.data.worker]
+                        console.log(response.data.worker)
+                        console.log(response.data.worker.name)
+                        // console.log('Worker id', response.data.worker)
+                        
+                        
+                        order['userData'] = response.data.worker
+                        order['userName'] = response.data.worker.name; //This definitely works!
+
+
+                        // companyName, email, image, name
                     })
+                    return order
                 })
-                // self.setState({
-                //     workersData
+
+                self.setState({
+                    workOrders: temp
+                })
                 // }, () => console.log(self.state))
-            })
-        });
+                console.log(self.state.workOrders)
+                console.log('SEcond then')
+        })
+            
+            
+                
+        
+        
+
+        // console.log('Saved is this:', this.state.workOrders)
 
         window.scrollTo(0, 0); //Brings user to top of page.
     }
@@ -77,11 +105,34 @@ class App extends Component {
         });
     }
 
+    handleFilters = (event) => {
+        
+    }
+
     render() {
-        const filteredWorkOrders = this.state.workOrders.filter(user => {
-            return user.workerId == 1
+        // console.log(this.state.workOrders)
+
+        let filteredWorkOrders;
+
+
+        if (!this.state.searchFilter) {
+            filteredWorkOrders = this.state.workOrders;
+
+        } else {
+            filteredWorkOrders = this.state.workOrders.filter(order => {
+            console.log('Filtering')
+            // console.log(order)
+            // console.log(JSON.stringify(order));
+            // console.log(order['userData'])
+            // console.log(order.userData[0])
+            // return order.workerId == 4
+            // return order.userName == this.state.searchFilter
+            // return order.userName.toLowerCase().includes(this.state.searchFilter.toLowerCase()) //This definitely works
+
+            return order.userData.name.toLowerCase().includes(this.state.searchFilter.toLowerCase())
 
         })
+        }
 
         return (
             <div className="App">
