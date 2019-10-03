@@ -1,26 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './ToggleSwitch.css';
 
-class ToggleSwitch extends Component {
-    constructor() {
-        super();
-        this.state = {
-            
-        }
-    }
-
-    render() {
-        return (
-            <p>Earliest first 
-                <label className="switch">
-                    <input type="checkbox" onClick={this.props.handleToggle}/>
-                    <span className="slider round"></span>
-                </label> 
-                Latest first
-            </p>
-        );
-    }
+const ToggleSwitch = ({ handleToggle }) => {
+    return (
+        <p>Earliest first 
+            <label className="switch">
+                <input type="checkbox" onClick={handleToggle}/>
+                <span className="slider round"></span>
+            </label> 
+            Latest first
+        </p>
+    );
 }
 
 export default ToggleSwitch;

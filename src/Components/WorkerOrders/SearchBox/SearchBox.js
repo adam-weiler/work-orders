@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import './SearchBox.css';
 
-const SearchBox = ({ SearchField, searchChange }) => {
+const SearchBox = ({ onSearchChange }) => {
     return (
-        <input type="search" name="workerFilter" placeholder="Filter by worker name..." onChange={searchChange}></input>
+        <input type="search" name="workerFilter" placeholder="Filter by worker name..." onChange={onSearchChange}></input>
     );
 }
 

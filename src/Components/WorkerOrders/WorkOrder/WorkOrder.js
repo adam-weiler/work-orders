@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios';  // Used for API requests.
+// import axios from 'axios';  // Used for API requests.
 import Moment from 'react-moment';  // Used to convert timestamp to date.
 
 import './WorkOrder.css';
@@ -14,54 +14,6 @@ class WorkOrder extends Component {
         }
     }
     
-    componentDidMount() {
-        const self = this;
-        // let workerList = this.state.workerList;
-
-        // console.log(this.props.workOrders.workerId);
-
-        console.log(this.props.workerList)
-        console.log('here')
-
-        axios.get(`https://www.hatchways.io/api/assessment/workers/${this.props.workOrders.workerId}`)
-        .then(function (response) {
-
-            // workerList = workerList.add(response.data.worker.id).add(response.data.worker.name)
-            // console.log(response.data.worker.id, response.data.worker.name)
-
-
-
-
-
-            self.setState({
-                worker: response.data.worker,
-            //     // workerList: self.state.workerList.concat({42})
-            //     // workerList: workerList.add(response.data.worker.id).add(response.data.worker.name)
-            });
-
-            // self.setState(previousState => ({
-            //     worker: response.data.worker,
-            //     workerList: [...previousState.workerList, response.data.worker]
-            // }));
-
-
-            // self.props.setState(previousState => ({
-            //     workerList: [...previousState.workerList, response.data.worker]
-            // }));
-
-
-
-            // self.setState(({ workerList }) => ({
-            //     workerList: workerList.add(response.data.worker.id).add(response.data.worker.name)
-            //  }));
-
-            self.props.updateWorkerList(response.data.worker)
-
-        });
-
-        
-    }
-
     render() {
         let workOrders = this.props.workOrders;
         let worker = this.state.worker;    
