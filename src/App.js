@@ -1,74 +1,45 @@
 import React, { Component } from 'react';
-
 import axios from 'axios';  // Used for API requests.
-
 import './App.css';
 
 // Smaller components:
+import SearchBox from './Components/SearchBox/SearchBox.js';
+import ToggleSwitch from './Components/ToggleSwitch/ToggleSwitch.js';
 import WorkOrders from './Components/WorkerOrders/WorkOrders.js';
 
 class App extends Component {
     constructor() {
         super();
         this.state = {
-            searchFilter: '',
-            datesInOrder: true,
-            workOrders: [],
-            loaded: false,
-
-            // workerList: []
+            searchFilter: '',  // The user's search input. Default is empty.
+            datesInOrder: true,  // Are the dates shown chronological. Default is true.
+            workOrders: [],  // Stores results of the API requests.
+            loaded: false,  // Is the page ready to load. Default is false.
         }
+        this.makeApiRequests();
     }
 
-    async componentDidMount() {
+    async makeApiRequests() {
         const self = this;
 
-        axios.get('https://www.hatchways.io/api/assessment/work_orders')
+        axios.get('https://www.hatchways.io/api/assessment/work_orders')  // Get a full list of work orders.
         .then(function (response) {
-            console.log('First then;')
-            self.setState({
-                // workOrders: self.sortByDate(response.data.orders)
+            response.data.orders.map(eachOrder => {  // Goes through each work order and gets information about the worker assigned.
+                axios.get(`https://www.hatchways.io/api/assessment/workers/${eachOrder.workerId}`)
+                .then(function (response) {
+                    eachOrder['companyName'] = response.data.worker.companyName;
+                    eachOrder['email'] = response.data.worker.email;
+                    eachOrder['image'] = response.data.worker.image;
+                    eachOrder['userName'] = response.data.worker.name;
+                })
+                return eachOrder;
             })
-            // console.log(self.state.workOrders)
-            
-            console.log('Second then;', response)
-            // console.log(self.state.workOrders)
-                let temp = response.data.orders;
-                // console.log(temp)
-                // let temp;
-                let temp3 = []
 
-                let temp2 = temp.map(eachOrder => {
-                    axios.get(`https://www.hatchways.io/api/assessment/workers/${eachOrder.workerId}`)
-                    .then(function (response) {
-                        // eachOrder['userData'] = response.data.worker
-                        eachOrder['companyName'] = response.data.worker.companyName;
-                        eachOrder['email'] = response.data.worker.email;
-                        eachOrder['image'] = response.data.worker.image;
-                        eachOrder['userName'] = response.data.worker.name; //This definitely works!
-
-
-                        temp3.push ({ 'companyName': response.data.worker.companyName,
-                                      'email': response.data.worker.email,
-                                      'id': response.data.worker.id,
-                                      'image': response.data.worker.image,
-                                      'workerName': response.data.worker.name })
-
-                    })
-                    return eachOrder;
-                })
-
-                // console.log('Our temp', temp2)
-                console.log('Our temp3', temp3)
-
-                self.setState({
-                    workOrders: self.sortByDate(response.data.orders),
-                    workerList: temp3,
-                    loaded: true
-                })
-                // }, () => console.log(self.state))
+            self.setState({
+                workOrders: self.sortByDate(response.data.orders),
+                loaded: true
+            })
         });
-        // console.log(self.state.workOrders)
 
         window.scrollTo(0, 0); //Brings user to top of page.
     }
@@ -87,20 +58,18 @@ class App extends Component {
         return arr;
     }
 
-     onSearchChange = (event) => {
+    onSearchChange = (event) => {  // Triggers on each keystroke of search box.
         this.setState({
             searchFilter: event.target.value
         });
-        // console.log(this.state)
     }
 
     handleToggle = () => {
-        console.log('Toggle')
         let newWorkOrders;
 
-        if (this.state.datesInOrder) {
+        if (this.state.datesInOrder) {  // If dates are in order, sort by reverse order.
             newWorkOrders = this.sortByDateReverse(this.state.workOrders);
-        } else {
+        } else {  // Else dates are in reverse order, sort by chronological order.
             newWorkOrders = this.sortByDate(this.state.workOrders);
         }
         
@@ -113,25 +82,24 @@ class App extends Component {
     render() {
         let filteredWorkOrders;
 
-        if (!this.state.searchFilter) {
+        if (!this.state.searchFilter) {  // If there is no search filter, display all work orders.
             filteredWorkOrders = this.state.workOrders;
         } else {
-            filteredWorkOrders = this.state.workOrders.filter(order => {
-                return order.userName.toLowerCase().includes(this.state.searchFilter.toLowerCase()) //This definitely works
-
-                // return order.userData.name.toLowerCase().includes(this.state.searchFilter.toLowerCase())
+            filteredWorkOrders = this.state.workOrders.filter(order => {  // Else apply search filter onto userName of work orders.
+                return order.userName.toLowerCase().includes(this.state.searchFilter.toLowerCase())
             })
         }
 
         return (
             <div className="App">
                 <h1>Work Orders:</h1>
-                {/* <WorkOrders workOrders={this.state.workOrders} workerList={this.state.workerList} updateWorkerList={this.updateWorkerList} onSearchChange={this.onSearchChange} handleToggle={this.handleToggle}/> */}
+                <SearchBox onSearchChange={this.onSearchChange} />
+                <ToggleSwitch handleToggle={this.handleToggle} />
 
                 { !this.state.loaded ? 
                     <div>Loading</div>
                 :
-                    <WorkOrders onSearchChange={this.onSearchChange} handleToggle={this.handleToggle} workOrders={filteredWorkOrders} workerList={this.state.workerList} />
+                    <WorkOrders workOrders={filteredWorkOrders} />
                 }
             </div>
         );

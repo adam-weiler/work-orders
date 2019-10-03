@@ -1,6 +1,7 @@
 .work-order {
     border: 1px solid #000;
     padding: 15px 55px;
+    background-color: rgb(220, 234, 245);
 }
 
 .profile-info {
