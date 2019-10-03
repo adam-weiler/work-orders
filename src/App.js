@@ -14,57 +14,44 @@ class App extends Component {
             searchFilter: '',
             datesInOrder: true,
             workOrders: [],
-            // workerList: new Set()
+            loaded: false
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const self = this;
 
         axios.get('https://www.hatchways.io/api/assessment/work_orders')
         .then(function (response) {
+            console.log('First then;')
             self.setState({
                 workOrders: self.sortByDate(response.data.orders)
             })
-            console.log(self.state.workOrders)
-            console.log('First then')
+            // console.log(self.state.workOrders)
         })
         .then(function (response) {
-            // console.log('aa')
-
+            console.log('Second then;')
                 let temp = self.state.workOrders;
 
                 temp = temp.map(order => {
                     axios.get(`https://www.hatchways.io/api/assessment/workers/${order.workerId}`)
                     .then(function (response) {
-                        console.log(response.data.worker)
-                        console.log(response.data.worker.name)
-                        // console.log('Worker id', response.data.worker)
-                        
-                        
                         order['userData'] = response.data.worker
+                        order['companyName'] = response.data.worker.companyName;
+                        order['email'] = response.data.worker.email;
+                        order['image'] = response.data.worker.image;
                         order['userName'] = response.data.worker.name; //This definitely works!
-
-
-                        // companyName, email, image, name
                     })
-                    return order
+                    return order;
                 })
 
                 self.setState({
-                    workOrders: temp
+                    workOrders: temp,
+                    loaded: true
                 })
                 // }, () => console.log(self.state))
-                console.log(self.state.workOrders)
-                console.log('SEcond then')
-        })
-            
-            
-                
-        
-        
-
-        // console.log('Saved is this:', this.state.workOrders)
+        });
+        // console.log(self.state.workOrders)
 
         window.scrollTo(0, 0); //Brings user to top of page.
     }
@@ -87,7 +74,7 @@ class App extends Component {
         this.setState({
             searchFilter: event.target.value
         });
-        console.log(this.state)
+        // console.log(this.state)
     }
 
     handleToggle = () => {
@@ -105,41 +92,28 @@ class App extends Component {
         });
     }
 
-    handleFilters = (event) => {
-        
-    }
-
     render() {
-        // console.log(this.state.workOrders)
-
         let filteredWorkOrders;
-
 
         if (!this.state.searchFilter) {
             filteredWorkOrders = this.state.workOrders;
-
         } else {
             filteredWorkOrders = this.state.workOrders.filter(order => {
-            console.log('Filtering')
-            // console.log(order)
-            // console.log(JSON.stringify(order));
-            // console.log(order['userData'])
-            // console.log(order.userData[0])
-            // return order.workerId == 4
-            // return order.userName == this.state.searchFilter
-            // return order.userName.toLowerCase().includes(this.state.searchFilter.toLowerCase()) //This definitely works
+                return order.userName.toLowerCase().includes(this.state.searchFilter.toLowerCase()) //This definitely works
 
-            return order.userData.name.toLowerCase().includes(this.state.searchFilter.toLowerCase())
-
-        })
+                // return order.userData.name.toLowerCase().includes(this.state.searchFilter.toLowerCase())
+            })
         }
 
         return (
             <div className="App">
-            <h1>Work Orders:</h1>
-            {/* <WorkOrders workOrders={this.state.workOrders} workerList={this.state.workerList} updateWorkerList={this.updateWorkerList} onSearchChange={this.onSearchChange} handleToggle={this.handleToggle}/> */}
+                <h1>Work Orders:</h1>
+                {/* <WorkOrders workOrders={this.state.workOrders} workerList={this.state.workerList} updateWorkerList={this.updateWorkerList} onSearchChange={this.onSearchChange} handleToggle={this.handleToggle}/> */}
 
-            <WorkOrders onSearchChange={this.onSearchChange} handleToggle={this.handleToggle} workOrders={filteredWorkOrders} />
+                {/* {this.state.loaded ?  */}
+                <WorkOrders onSearchChange={this.onSearchChange} handleToggle={this.handleToggle} workOrders={filteredWorkOrders} />
+                  {/* : <div>Loading</div>} */}
+            
             </div>
         );
     }

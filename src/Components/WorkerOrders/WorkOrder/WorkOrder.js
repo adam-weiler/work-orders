@@ -9,33 +9,44 @@ class WorkOrder extends Component {
     constructor() {
         super();
         this.state = {
-            worker: [],
-            // workerList: []
+            loaded: false
         }
+    }
+
+    async componentDidMount() {
+        console.log('loading done!', this.props.workOrders)
+
+        this.setState({
+            loaded: true
+        })
     }
     
     render() {
         let workOrders = this.props.workOrders;
-        let worker = this.state.worker;    
+        console.log('dnoe')
+        console.log(workOrders)  
     
         Moment.globalFormat = 'D/MM/YYYY, h:MM:SS A';
 
         return (
-            <article className='work-order'>
-                <h2>{workOrders.name}</h2>
-                <p className='text-left'>{workOrders.description}</p>
-                <span className='profile-info'>
-                    <img src={worker.image} alt={worker.name} className='profile-image' />
-                    <span className='profile-text text-left'>
-                        <p>{worker.name}</p>
-                        <p>{worker.companyName}</p>
-                        <p>{worker.email}</p>
+            this.state.workOrders.userName ? 
+                <article className='work-order'>
+                    <h2>{workOrders.name}</h2>
+                    <p className='text-left'>{workOrders.description}</p>
+                    <span className='profile-info'>
+                        {workOrders.userData }
+                        {/* <img src={worker.image} alt={worker.name} className='profile-image' />
+                        <span className='profile-text text-left'>
+                            <p>{worker.name}</p>
+                            <p>{worker.companyName}</p>
+                            <p>{worker.email}</p>
+                        </span> */}
                     </span>
-                </span>
-                <p className='text-right'>
-                    <Moment unix>{workOrders.deadline}</Moment>
-                </p>
-            </article>
+                    <p className='text-right'>
+                        <Moment unix>{workOrders.deadline}</Moment>
+                    </p>
+                </article>
+            : <div>Loading</div>
         );
     }
 }
